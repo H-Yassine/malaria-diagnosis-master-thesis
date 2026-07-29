@@ -1,0 +1,72 @@
+# Datasets
+data/*
+!data/README.md
+
+datasets/*
+!datasets/README.md
+
+# Research papers
+papers/*
+!papers/README.md
+
+# Trained models and checkpoints
+models/*
+!models/README.md
+
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+
+# Experiment outputs
+runs/
+wandb/
+logs/
+outputs/
+
+# Large result files
+results/*
+!results/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# Environment variables and secrets
+.env
+.env.*
+*.key
+*.pem
+
+# LaTeX temporary files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
