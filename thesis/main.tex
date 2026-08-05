@@ -1,0 +1,230 @@
+\documentclass[
+    12pt,
+    a4paper,
+    oneside
+]{report}
+
+% -------------------------------------------------
+% Language and encoding
+% -------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+% -------------------------------------------------
+% Page layout and typography
+% -------------------------------------------------
+
+\usepackage[
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+]{geometry}
+
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+
+% -------------------------------------------------
+% Chapter formatting
+% -------------------------------------------------
+
+\usepackage{titlesec}
+
+% Roman numerals for the main chapters
+\renewcommand{\thechapter}{\Roman{chapter}}
+
+% Display: I Introduction
+% Do not display: Chapter I
+\titleformat{\chapter}
+    {\normalfont\LARGE\bfseries}
+    {\thechapter}
+    {1em}
+    {}
+
+\titlespacing*{\chapter}
+    {0pt}
+    {-20pt}
+    {30pt}
+
+% -------------------------------------------------
+% Mathematics
+% -------------------------------------------------
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Chapter-relative numbering, for example (IV.1)
+\numberwithin{equation}{chapter}
+
+% -------------------------------------------------
+% Figures and tables
+% -------------------------------------------------
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+
+% Chapter-relative numbering, for example Figure V.2
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+
+% -------------------------------------------------
+% Units and source-code excerpts
+% -------------------------------------------------
+
+\usepackage{siunitx}
+
+\usepackage{listings}
+
+\lstset{
+    basicstyle=\small\ttfamily,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=8pt,
+    breaklines=true,
+    showstringspaces=false
+}
+
+% -------------------------------------------------
+% Colours
+% Required later for documenting AI-assisted content
+% -------------------------------------------------
+
+\usepackage{xcolor}
+
+% -------------------------------------------------
+% Bibliography
+% -------------------------------------------------
+
+
+
+% -------------------------------------------------
+% Links and cross-references
+% -------------------------------------------------
+
+\usepackage[hidelinks]{hyperref}
+\usepackage[nameinlink]{cleveref}
+
+% -------------------------------------------------
+% Document
+% -------------------------------------------------
+
+\begin{document}
+
+% -------------------------------------------------
+% Title page
+% -------------------------------------------------
+
+\begin{titlepage}
+
+    \begin{center}
+
+        {\LARGE\bfseries Master's Thesis\par}
+
+        \vspace{2.2cm}
+
+        {\LARGE\bfseries
+        AI-Based Malaria Diagnosis from Microscopic Thick Blood Smear Images
+        \par}
+
+    \end{center}
+
+    \vspace{2.5cm}
+
+    \renewcommand{\arraystretch}{1.5}
+
+    \begin{tabular}{@{}p{4.2cm}p{10cm}@{}}
+
+        Student: &
+        Yassine Hermak \\
+
+        Degree Program: &
+        Electrical Engineering / Information Technology \\
+
+        Specialization: &
+        Information Engineering \\
+
+        First Examiner: &
+        Prof. Dr.-Ing. Achim Ibenthal \\
+
+        University: &
+        HAWK University of Applied Sciences and Arts
+        Hildesheim/Holzminden/Göttingen \\
+
+        Faculty: &
+        Faculty of Engineering and Health in Göttingen \\[0.4cm]
+
+        & \includegraphics[width=5cm]{HAWK_I_Logo.jpg} \\[0.6cm]
+
+        Second Examiner: &
+        Dilane Chanja \\
+
+        In Cooperation With: &
+        CarByte Engineering GmbH \\
+
+        Period: &
+        July 2026 to November 2026 \\
+
+    \end{tabular}
+
+    \vfill
+
+\end{titlepage}
+
+% -------------------------------------------------
+% Front matter
+% -------------------------------------------------
+
+\pagenumbering{roman}
+
+\input{chapters/00_abstract}
+
+\clearpage
+\tableofcontents
+\clearpage
+
+% The glossary will be inserted here later.
+% According to the HAWK guidance, it should preferably
+% appear directly after the table of contents.
+
+% -------------------------------------------------
+% Main content
+% -------------------------------------------------
+
+\pagenumbering{arabic}
+
+\input{chapters/01_introduction}
+
+\input{chapters/02_system_overview}
+
+\input{chapters/03_state_of_research}
+
+\input{chapters/04_requirements_analysis}
+
+\input{chapters/05_concept_development}
+
+\input{chapters/06_implementation}
+
+\input{chapters/07_testing}
+
+\input{chapters/08_benchmarking}
+
+\input{chapters/09_conclusion}
+
+% -------------------------------------------------
+% Bibliography
+% -------------------------------------------------
+
+\clearpage
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
