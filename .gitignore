@@ -5,9 +5,6 @@ data/*
 datasets/*
 !datasets/README.md
 
-# Research papers
-papers/*
-!papers/README.md
 
 # Trained models and checkpoints
 models/*
@@ -61,6 +58,9 @@ env/
 *.nav
 *.snm
 *.vrb
+
+# Generated manifest (private laptop-specific paths, regenerate per computer)
+manifest.csv
 
 
 # Operating system files
