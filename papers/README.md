@@ -1,9 +1,9 @@
 # Literature
 
-Research papers are not included in this repository because they may be
+This folder contains the research papers used for the literature review and the theoretical background of the thesis.
 
-copyright-protected.
+The papers are included for internal academic collaboration within the project team. Copyright remains with the respective authors and publishers.
 
-Bibliographic information is maintained in:
+The corresponding bibliographic references are maintained in:
 
 thesis/references.bib
