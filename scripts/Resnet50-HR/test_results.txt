@@ -1,0 +1,21 @@
+
+--- run using checkpoint: checkpoints/best_model.pth ---
+confusion matrix:
+[[201   2]
+ [  2 748]]
+accuracy: 0.9958
+sensitivity: 0.9973
+specificity: 0.9901
+precision: 0.9973
+f1-score: 0.9973
+support - uninfected: 203, infected: 750
+roc-auc: 0.9997
+              precision    recall  f1-score   support
+
+  uninfected       0.99      0.99      0.99       203
+    infected       1.00      1.00      1.00       750
+
+    accuracy                           1.00       953
+   macro avg       0.99      0.99      0.99       953
+weighted avg       1.00      1.00      1.00       953
+

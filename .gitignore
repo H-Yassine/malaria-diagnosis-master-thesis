@@ -6,13 +6,10 @@ datasets/*
 !datasets/README.md
 
 
-# Trained models and checkpoints
-models/*
-!models/README.md
 
-checkpoints/
+
+
 *.pt
-*.pth
 *.ckpt
 *.onnx
 *.h5
@@ -59,8 +56,7 @@ env/
 *.snm
 *.vrb
 
-# Generated manifest (private laptop-specific paths, regenerate per computer)
-manifest.csv
+
 
 
 # Operating system files
