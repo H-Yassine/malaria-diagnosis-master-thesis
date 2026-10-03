@@ -1,0 +1,63 @@
+
+--- run using checkpoint: checkpoints/best_model.pth ---
+confusion matrix:
+[[140  63]
+ [ 39 711]]
+accuracy: 0.8930
+sensitivity: 0.9480
+specificity: 0.6897
+precision: 0.9186
+f1-score: 0.9331
+support - uninfected: 203, infected: 750
+roc-auc: 0.9378
+              precision    recall  f1-score   support
+
+  uninfected       0.78      0.69      0.73       203
+    infected       0.92      0.95      0.93       750
+
+    accuracy                           0.89       953
+   macro avg       0.85      0.82      0.83       953
+weighted avg       0.89      0.89      0.89       953
+
+
+--- run using checkpoint: checkpoints/best_model.pth ---
+confusion matrix:
+[[136  67]
+ [  6 744]]
+accuracy: 0.9234
+sensitivity: 0.9920
+specificity: 0.6700
+precision: 0.9174
+f1-score: 0.9532
+support - uninfected: 203, infected: 750
+roc-auc: 0.9711
+              precision    recall  f1-score   support
+
+  uninfected       0.96      0.67      0.79       203
+    infected       0.92      0.99      0.95       750
+
+    accuracy                           0.92       953
+   macro avg       0.94      0.83      0.87       953
+weighted avg       0.93      0.92      0.92       953
+
+
+--- run using checkpoint: checkpoints/best_model.pth ---
+confusion matrix:
+[[161  42]
+ [ 27 723]]
+accuracy: 0.9276
+sensitivity: 0.9640
+specificity: 0.7931
+precision: 0.9451
+f1-score: 0.9545
+support - uninfected: 203, infected: 750
+roc-auc: 0.9506
+              precision    recall  f1-score   support
+
+  uninfected       0.86      0.79      0.82       203
+    infected       0.95      0.96      0.95       750
+
+    accuracy                           0.93       953
+   macro avg       0.90      0.88      0.89       953
+weighted avg       0.93      0.93      0.93       953
+
