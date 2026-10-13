@@ -7,7 +7,7 @@ from sklearn.metrics import confusion_matrix, classification_report, roc_curve, 
 import matplotlib.pyplot as plt
 
 from dataset import MalariaDataset
-
+#   The use of argparse was first seen in Kaggle scripts and was then implemented with support from Claude based on the parameters already used in this project. The --data-root argument was also introduced to avoid a fixed dataset path and make the script easier to reuse on different systems.
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=str, required=True)
@@ -40,7 +40,7 @@ def main():
     test_dataset = MalariaDataset(args.labels_csv, args.data_root, "test", transform=test_transform)
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, num_workers=0)
 
-    # same model architecture -> load trained weights
+    # same model architecture 
     model = models.mobilenet_v3_small(weights=None)
     model.classifier[3] = nn.Linear(model.classifier[3].in_features, 2)
     model.load_state_dict(torch.load(args.checkpoint, map_location=device))

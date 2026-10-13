@@ -1,4 +1,4 @@
-# I built this Grad-CAM script based on the pytorch-grad-cam library
+# this Grad-CAM script was built based on the pytorch-grad-cam library
 # https://github.com/jacobgil/pytorch-grad-cam
 
 
@@ -69,7 +69,7 @@ def main():
             all_preds.extend(preds.cpu().numpy())
             all_labels.extend(labels.numpy())
 
-    # the different image-groups we need: FN, FP, TP, Tn // first N of each group
+    # the different image-groups needed: FN, FP, TP, Tn // first N of each group
     groups = {"FN": [], "FP": [], "TP": [], "TN": []}
     for i in range(len(all_labels)):
         label = all_labels[i]

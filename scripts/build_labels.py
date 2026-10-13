@@ -23,7 +23,7 @@ from pathlib import Path
 # paths - change DATA_ROOT !!! this path is on my private laptop
 #
 # ---------------------------------------------------------------------
-# AI helped me add the data-root argument so I can use the same script on different computers without changing the path.
+# The \texttt{--data-root} argument was added with support from AI so that the same script could be used on different computers without changing the dataset path.
 DATA_ROOT = Path("/Users/yassine.hermak/Desktop/Masterarbeit/malaria-diagnosis/data/Datasets/NLM")
 OUTPUT_CSV = Path("labels.csv")
 ####
@@ -41,17 +41,17 @@ CLASS_CONFIG = {
     "uninfected": {
         "images_glob": "NIH-NLM-ThickBloodSmears-Uninfected/Uninfected Patients/*/tiled/*.tiff",
         "label": 0,
-        "patient_from_parts_index": -3,  # .../Uninfected Patients/PATIENT/tiled/img.tiff
+        "patient_from_parts_index": -3,
     },
     "vivax": {
         "images_glob": "NIH-NLM-ThickBloodSmearsPV-Vivax/All_PvTk/*/*.jpg",
         "label": 1,
-        "patient_from_parts_index": -2,  # .../All_PvTk/PATIENT/img.jpg
+        "patient_from_parts_index": -2,
     },
     "falciparum": {
         "images_glob": "ThickBloodSmears_150-Falciparum/*/*.jpg",
         "label": 1,
-        "patient_from_parts_index": -2,  # .../PATIENT/img.jpg
+        "patient_from_parts_index": -2,  
     },
 }
 

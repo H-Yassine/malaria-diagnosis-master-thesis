@@ -1,4 +1,4 @@
-# I built this Grad-CAM script based on the pytorch-grad-cam library
+#  this Grad-CAM script was built based on the pytorch-grad-cam library
 # https://github.com/jacobgil/pytorch-grad-cam
 
 
@@ -69,7 +69,7 @@ def main():
             all_preds.extend(preds.cpu().numpy())
             all_labels.extend(labels.numpy())
 
-    # the different image-groups we need: FN, FP, TP, Tn // first N of each group
+    # the different image-groups needed: FN, FP, TP, Tn // first N of each group
     groups = {"FN": [], "FP": [], "TP": [], "TN": []}
     for i in range(len(all_labels)):
         label = all_labels[i]
@@ -90,7 +90,7 @@ def main():
     for g, idxs in groups.items():
         print(f"{g}: {len(idxs)} images selected")
 
-    #model.features[-1] the last onvolutional block is used target layer
+    #model.features[-1] the last onvolutional block is used as target layer
     target_layers = [model.features[-1]]
     cam = GradCAM(model=model, target_layers=target_layers)
 
@@ -100,7 +100,7 @@ def main():
             img_path = row["image_path"]
             raw_image = Image.open(img_path).convert("RGB")
 
-            # use the same degraded image for model and also as background for the heatmap
+            # use the same degraded image for the  model and also as background for the heatmap
             degraded_image = degrade_transform(raw_image)
 
             input_tensor = transforms.Compose([

@@ -8,7 +8,7 @@ from torchvision import models, transforms
 import matplotlib.pyplot as plt
 
 from dataset import MalariaDataset
-
+#   The use of argparse was first seen in Kaggle scripts and was then implemented with support from Claude based on the parameters already used in this project. The --data-root argument was also introduced to avoid a fixed dataset path and make the script easier to reuse on different systems.
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=str, required=True)
@@ -59,7 +59,7 @@ def main():
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=0)
 
-    # pretrained mobilenet_v3_small, classifier head is replaced for our 2 classes
+    # pretrained mobilenet_v3_small, classifier head is replaced for the 2 classes
     model = models.mobilenet_v3_small(weights="IMAGENET1K_V1")
     model.classifier[3] = nn.Linear(model.classifier[3].in_features, 2)
     model = model.to(device)

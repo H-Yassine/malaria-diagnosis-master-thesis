@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from torchvision import models, transforms
 
 from dataset import MalariaDataset
-
+#   The use of argparse was first seen in Kaggle scripts and was then implemented with support from Claude based on the parameters already used in this project. The --data-root argument was also introduced to avoid a fixed dataset path and make the script easier to reuse on different systems.
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-root", type=str, required=True)

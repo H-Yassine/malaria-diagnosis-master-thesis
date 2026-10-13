@@ -1,4 +1,4 @@
-# I built this Grad-CAM script based on the pytorch-grad-cam library
+#  this Grad-CAM script was built based on the pytorch-grad-cam library
 # https://github.com/jacobgil/pytorch-grad-cam
 
 

@@ -21,7 +21,7 @@ OUTPUT_DIR = "gradcam_outputs"
 
 N_PER_GROUP = {"FN": 5, "FP": 5, "TP": 5, "TN": 5}
 
-# same resolution we used in LR3
+# same resolution used in LR3
 RESOLUTION = 56
 
 def main():
