@@ -1,2 +1,10 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
+
+Malaria detection strongly depends on microscopy and trained personnel, which can limit fast diagnosis and treatment, especially in resource-limited regions where access to such tools may be limited. This work focuses on developing a simpler deep learning approach for malaria prescreening from thick blood smear images, with future deployment using a combination of microscope, ocular adapter and smartphone.
+
+To achieve this goal, the NLM/NIH dataset was used to train and evaluate multiple models based on ResNet50, ResNet18 and MobileNetV3-Small. The task was to classify complete images as either infected or uninfected. Several simulated resolution levels were tested, starting from high resolution at 224 $\times$ 224 pixels down to the lowest resolution of 56 $\times$ 56 pixels. Grad-CAM and Grad-CAM++ were used to analyse which image regions influenced the model predictions.
+
+All architectures showed very high performance at high resolution. The highest accuracy of 99.69\% was achieved by both ResNet18 and MobileNetV3-Small, while ResNet50 achieved 99.58\%. At the lowest reduced resolution, the main decrease was observed in specificity. After a two-stage optimisation, MobileNetV3-Small achieved an accuracy of 92.76\%, a sensitivity of 96.40\%, a specificity of 79.31\% and an F1-score of 95.45\%. Grad-CAM and Grad-CAM++ showed that the models sometimes focused on image borders and dark background areas. To investigate this behaviour further, an external test was performed using the AIR Uganda dataset, which has different image characteristics. ResNet50 and MobileNetV3-Small still detected most infected images at LR3, while ResNet18 showed lower performance.
+
+The achieved results show that MobileNetV3-Small is a promising lightweight model for future deployment. The developed approach is still at the research prototype stage and requires further evaluation before real-world deployment. The next important step is to evaluate the models using real images captured with the microscope, developed ocular adapter and smartphone setup under realistic deployment conditions.

@@ -1,3 +1,103 @@
 \chapter{Benchmarking}
 \label{chap:benchmarking}
 
+To have a perspective on where the performance of the developed models stands in the research field, the models are benchmarked against existing published studies that use thick blood smears.
+
+The comparison considers relevant aspects such as the data used, whole-image versus patch-based approaches, and the reported performance metrics. Because the selected studies differ in these aspects, the comparison is indicative and not a ranking of the different methods. Smartphone-based and lightweight approaches are also considered, since they are relevant to the future deployment direction of this project and to the reduced-resolution experiments.
+
+In the following sections, the selected studies will first be presented and then compared with the results of this thesis. At the end of the chapter, the main differences and findings will be discussed.
+
+\section{Selected previous Studies for Comparison}
+
+The selection of the studies for the benchmarking was based on whether they used thick blood smears, deep learning methods, and low-resource or smartphone-based settings. Lightweight models for resource-limited deployment were also given priority. 
+
+Two particularly relevant studies are Kassim et al. \cite{Kassim2021}, published in 2021, and Yang et al. \cite{Yang2020}, published in 2020.
+
+Kassim et al. \cite{Kassim2021} proposed PlasmodiumVF-Net for malaria diagnosis from thick blood smear images. Their system combines parasite detection with classification and was evaluated on a dataset containing P. falciparum, P. vivax, and uninfected samples. This study was selected because it uses the same NLM/NIH dataset family as the dataset used in this thesis and therefore provides one of the closest comparisons.
+
+Yang et al. \cite{Yang2020} developed a smartphone-based deep learning system for parasite detection in thick blood smear images. Their approach combines candidate screening with a CNN and was designed for use on mobile devices. This study is relevant because it combines thick smear microscopy, smartphone image acquisition, and deep learning.
+
+Two other studies were also selected because they share similar aspects with the work in this thesis. These are Maturana et al. \cite{Maturana2023} and Vásquez Ascate et al. \cite{VasquezAscate2026}.
+
+Maturana et al. \cite{Maturana2023} presented the iMAGING system, which combines a low-cost robotized microscope, smartphone image acquisition, and CNN-based parasite detection. Several object detection architectures were compared on thick blood smear images. This study was selected mainly because of its system-level similarity to the future deployment direction of this project.
+
+Vásquez Ascate et al. \cite{VasquezAscate2026} developed a smartphone-based system that detects parasites in thick blood smears using several lightweight object detection models. The dataset was collected from real clinical samples using different smartphone models and included both P. vivax and P. falciparum. This study was selected because it combines thick blood smears, smartphone acquisition, lightweight architectures, and deployment-oriented evaluation.
+
+\section{Comparison with Previous Studies}
+
+Table~\ref{tab:benchmark} summarises the results of this thesis together with the four selected studies. The comparison includes the data used, the architectures, the task, and the main reported results.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison with selected previous studies.}
+\label{tab:benchmark}
+\normalsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{2.7cm}|p{3.8cm}|p{3.6cm}|p{4.0cm}|p{3.6cm}|}
+\hline
+\textbf{Study} &
+\textbf{Data} &
+\textbf{Architecture} &
+\textbf{Task } &
+\textbf{Main Results} \\
+\hline
+
+This thesis &
+6038 NLM thick-smear images &
+ResNet50, ResNet18, MobileNetV3-Small &
+Whole-image binary classification &
+Best HR accuracy: 99.69\%, MobileNetV3-Small at LR3: 92.76\% \\
+\hline
+
+Kassim et al. \cite{Kassim2021} &
+Approx. 6000 images, 350 patients &
+Mask R-CNN and ResNet50 &
+Detection and image/patient-level classification &
+83.9\% image-level, 92.3\% patient-level accuracy \\
+\hline
+
+Yang et al. \cite{Yang2020} &
+1819 images, 150 patients &
+Custom CNN &
+Patch classification: parasite vs. background &
+93.46\% accuracy \\
+\hline
+
+Maturana et al. \cite{Maturana2023} &
+2571 thick-smear images &
+YOLOv5x and other detectors &
+Parasite detection &
+YOLOv5x: F-score 92.79\% \\
+\hline
+
+Vásquez Ascate et al. \cite{VasquezAscate2026} &
+8625 images, 400 slides &
+YOLOv11n and other lightweight detectors &
+Parasite object detection &
+YOLOv11n: 90.92\% accuracy, F1 93.8\% \\
+\hline
+
+\end{tabular}%
+}
+\end{table}
+
+\FloatBarrier
+
+The study of Kassim et al. \cite{Kassim2021} provides the closest comparison to this thesis because they use the same NLM/NIH thick-smear dataset family that was used in this work. On top of that, their method also includes ResNet50, which was one of the high-performing architectures during the testing phase. The main difference is that their PlasmodiumVF-Net first detects parasite candidates using Mask R-CNN and then uses ResNet50 to filter false-positive candidates before performing image- and patient-level classification. Their framework reached an overall accuracy of 83.9\% at image level and 92.3\% at patient level. On the other hand, the approach in this thesis directly classifies the complete image as infected or uninfected, with the best full-resolution models reaching 99.69\% image-level accuracy. The higher accuracy in this thesis should be interpreted with care because Kassim et al. distinguish between P. vivax, P. falciparum, and uninfected samples, while this thesis uses a binary infected/uninfected classification.
+
+The study of Yang et al. \cite{Yang2020} also provides a relevant comparison because they use thick blood smear images for smartphone-based malaria detection. Their method first identifies potential parasites using an intensity-based Iterative Global Minimum Screening (IGMS). Then, it uses a customised CNN to classify each candidate as parasite or background. Their CNN reached an accuracy of 93.46\%, a sensitivity of 92.59\% and a specificity of 94.33\%. The deployment-relevant model in this work is MobileNetV3-Small, which provides a useful comparison because Yang et al. target smartphone-based detection and MobileNetV3-Small was selected as the lightweight architecture for the future deployment direction of this thesis. At full resolution, MobileNetV3-Small reached an accuracy of 99.69\%. After the optimisation at LR3, it reached an accuracy of 92.76\%, a sensitivity of 96.40\% and a specificity of 79.31\%. The LR3 accuracy is close to the 93.46\% accuracy reported by Yang et al., although the two approaches solve different tasks. Yang et al. classify regions as parasite or background, while MobileNetV3-Small in this thesis classifies complete images as either infected or uninfected.
+
+The studies by Maturana et al. \cite{Maturana2023} and Vásquez Ascate et al. \cite{VasquezAscate2026} are more focused on parasite detection and practical deployment. Both use object detection models on thick blood smear images and include smartphone-based image acquisition. Maturana et al. used YOLOv5x to detect leukocytes and Plasmodium trophozoites and reached an overall F-score of 92.79\% for this detection task. Vásquez Ascate et al. used YOLOv11n for parasite detection and reached an accuracy of 90.92\% and an F1-score of 93.8\%. MobileNetV3-Small at LR3 in this thesis reached an accuracy of 92.76\% and an F1-score of 95.45\% for the binary classification of complete images as infected or uninfected. The results are quite close in terms of the reported performance metrics. However, these metrics should not be understood in the same way because the models are solving different tasks. Maturana et al. and Vásquez Ascate et al. focus on detecting parasites inside the image, while the model in this thesis classifies the complete image as infected or uninfected.
+
+\section{Discussion of the Results}
+
+The models developed in this work show in general a high performance, especially with full-resolution images, with the best accuracy reaching 99.69\%. This performance is higher than the results reported in all selected studies. However, this does not necessarily mean that the other approaches are inferior, since the tasks and their complexity are different. Binary classification is a simpler task compared with parasite detection or species classification. Even so, the performance achieved during the testing phase still shows that the developed models perform very well on the used dataset.
+
+MobileNetV3-Small, which is the deployment-relevant model in this work, also reached good performance. After the optimisation at LR3, it achieved an accuracy of 92.76\% and a sensitivity of 96.40\%, although the specificity was 79.31\%. This lower specificity may be related to the class imbalance in the dataset, since only 50 uninfected patients were available compared with 300 infected patients. The overall performance is also in a similar range to the deployment-oriented studies discussed in the previous section. This supports the idea that a lightweight model can still maintain good performance when working with reduced image resolution.
+
+As mentioned in the previous chapters, the goal of the overall project to which this work belongs is malaria prescreening. In this context, the achieved sensitivity of 96.40\% at LR3 is positive because most infected images are still detected. On the other hand, the specificity of 79.31\% means that more uninfected images are incorrectly flagged as infected. For a prescreening system, this may be more acceptable than missing infected images, but the number of false-positive predictions should still be improved.
+
+What cannot be proved from this benchmarking is whether one of the compared approaches is generally better than the others. The studies use different datasets, tasks, models, acquisition methods and evaluation metrics. In addition, the reduced-resolution experiments in this thesis were simulated from the available images and were not performed using images captured with the final smartphone and microscope setup.
+
+Overall, the benchmarking with the four selected studies gives a useful indication that the results of this thesis are promising for the malaria prescreening task and that the models can still achieve good performance at lower resolutions. However, an evaluation using images captured with a smartphone and microscope setup is still required to test the performance under real deployment conditions.
+

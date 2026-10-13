@@ -1,3 +1,139 @@
 \chapter{Requirements Analysis}
 \label{chap:requirements-analysis}
 
+This chapter describes the main requirements for the diagnostic system developed in this project. The requirements are based on the project description file provided by Professor A. Ibenthal. These requirements derive from a workshop held on 14 November 2025. In addition to the functional requirements, the chapter describes important technical limitations, dependencies between the three related Master's projects, and the boundaries of this thesis.
+
+\section{Functional Requirements}
+\label{sec:functional_requirements}
+
+The requirements workshop defined four main functional requirements for the overall system, which are summarised in Table~\ref{tab:functional_requirements}.
+
+\begin{table}[htbp]
+\centering
+\caption{Functional requirements of the diagnostic system.}
+\label{tab:functional_requirements}
+\begin{tabularx}{\textwidth}{|p{4.2cm}|X|}
+\hline
+\textbf{Requirement} & \textbf{Description} \\
+\hline
+Deployment &
+The system should be usable in a health center or similar enclosed environment. \\
+\hline
+Smartphone-based image acquisition &
+Microscopic images should be digitised by a mobile phone attached to an ocular adapter which is connected to an analog microscope. \\
+\hline
+PC-based diagnostic tool &
+The captured images should be processed and analysed by software running on a computer. \\
+\hline
+Python-based AI algorithm &
+The AI algorithm should be implemented in Python to support reuse and further development by EAII. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\FloatBarrier
+
+The first requirement is the deployment environment. The system is intended for use in a health center or similar indoor environment. The project therefore does not target operation in uncontrolled outdoor environments.
+
+The second requirement concerns image acquisition. Existing analog microscopes should be used together with an ocular adapter. A mobile phone is then attached to the adapter and captures digital images through the microscope. This allows existing microscopy equipment to be used without replacing the complete microscope.
+
+The third requirement is a PC-based diagnostic tool. Images captured with the smartphone should be transferred to a computer, where they can be processed and analysed by the diagnostic tool.
+
+The fourth requirement concerns the implementation of the AI algorithm. The algorithm should be developed in Python, so it can later be reused and further developed by the Ethiopian Artificial Intelligence Institute (EAII).
+
+\section{Non-Functional Requirements and Limitations}
+\label{sec:nonfunctional_requirements}
+
+In addition to the functional requirements, several technical and practical constraints influence the development of the diagnostic system. The main non-functional requirements and limitations are summarised in Table~\ref{tab:nonfunctional_requirements}.
+
+\begin{table}[htbp]
+\centering
+\caption{Non-functional requirements and limitations.}
+\label{tab:nonfunctional_requirements}
+\begin{tabularx}{\textwidth}{|p{4.2cm}|X|}
+\hline
+\textbf{NF-Requirement / limitation} & \textbf{Description} \\
+\hline
+Resolution compatibility &
+The AI method should remain suitable for the image resolution achievable by the ocular adapter. The final measured value is still to be provided by the ocular adapter project. \\
+\hline
+Diagnostic performance &
+Classification performance should be evaluated using suitable metrics. No fixed minimum target is currently defined in the available requirements. \\
+\hline
+Implementation language &
+The AI algorithms should be implemented in Python. \\
+\hline
+Maintainability &
+The implementation should be understandable and reusable for later development by EAII. \\
+\hline
+Indoor operating scope &
+The current system is designed only for controlled indoor use. Additional robustness requirements for field deployment are outside the current project scope. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\FloatBarrier
+
+An important aspect is the relationship between diagnostic performance and image resolution. The ocular adapter developed within the overall project limits the resolution of the captured images. The AI method should therefore be suitable for the resolution that can realistically be achieved with the adapter.
+
+At the current stage, the final measured resolution of the ocular adapter has not yet been established for this thesis. The corresponding value will be obtained from the adapter development and later included as a concrete system limitation. Until this value is available, the resolution requirement remains open. Similarly, no fixed minimum values for accuracy, sensitivity, or specificity are defined in the available project requirements.
+
+The AI implementation is restricted to Python, as defined in the requirements workshop. This supports code reuse and future development by the Ethiopian Artificial Intelligence Institute. The software should also remain understandable and maintainable so that it can be further developed after completion of the thesis. The project is therefore managed in a GitHub repository, where the code and important development steps are regularly committed and documented.
+
+The current work of the overall project develops and tests the system for a controlled indoor environment. Requirements for a fully portable and robust field system are left for future work.
+
+\section{Dependencies between the Project Components}
+\label{sec:project_dependencies}
+
+The diagnostic system is developed through three related Master’s projects, which address different parts of the same processing pipeline and therefore depend on each other. Their connection is shown in Figure~\ref{fig:project_components}.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{%
+        \includegraphics[width=0.88\textwidth]{project_components.pdf}
+    }
+    \caption{Relationship between the three project components.}
+    \label{fig:project_components}
+\end{figure}
+
+\FloatBarrier
+The first project, carried out by Nabil Laaroussi, focuses on the development of the ocular adapter. The adapter connects the smartphone camera to an analog microscope and determines the achievable resolution of the image. The resolution is tested using special test images and measured by how many line pairs can still be clearly seen across the image.
+
+This measured resolution represents an important constraint for the AI method developed in this thesis. A classification model may perform well on high-resolution laboratory images but may not maintain the same performance when the resolution is reduced by the image acquisition system. The final adapter resolution therefore has to be considered when evaluating the suitability of the trained models.
+
+The second project, conducted by Zaineb Lerhmame, focuses on the creation of resolution-adaptive simulation data. Existing high-resolution images are processed to simulate lower image resolutions. The approach uses image preprocessing and low-pass filtering to reproduce a defined resolution level. This allows the diagnostic algorithm to be evaluated under image conditions similar to those expected from the ocular adapter.
+
+This thesis represents the AI diagnosis part of the system. It uses malaria microscopy images to develop and compare classification models and investigates their suitability under multiple image resolutions. This work therefore depends on both the acquisition limitations identified by the ocular adapter project and the resolution simulation approach developed in the second project.
+
+\section{Requirements derived from the Research Gap}
+\label{sec:requirements_research_gap}
+
+The literature review in Chapter~\ref{chap:state-of-research} identified two aspects that are especially relevant for the requirements of this thesis.
+
+Many existing malaria approaches focus on detecting parasites or analysing small image regions instead of classifying the complete microscopic image. In this thesis, the whole thick blood smear image is used for binary classification. The model therefore classifies each image as either infected or uninfected without detecting individual parasites.
+
+The reviewed studies mainly evaluate their models at a fixed image resolution. The influence of systematically reduced resolution is less clearly investigated. Since the ocular adapter introduces a practical limitation on achievable image resolution, the AI method should be evaluated not only on the original high-resolution images but also under reduced-resolution conditions.
+
+These two aspects lead to the following additional requirements for the experimental work:
+
+\begin{itemize}
+    \item The models should support binary whole-image classification of thick blood smear images.
+    \item The same classification approach should be evaluated at different image resolutions.
+    \item Model performance should be compared using the same data split and evaluation procedure.
+    \item The results should allow an assessment of whether the models remain effective when image resolution is reduced.
+\end{itemize}
+
+The measured resolution of the ocular adapter should be used as the main reference once it becomes available. Since the adapter development is still ongoing, the AI models are also tested at lower resolutions to investigate their behaviour under more demanding conditions.
+
+\section{Scope of the Present Thesis}
+\label{sec:requirements_scope}
+
+Based on these requirements, this thesis focuses on the AI-based classification component of the diagnostic system. The main task is to classify thick blood smear images as infected or uninfected.
+
+The work includes the comparison of ResNet50, ResNet18, and MobileNet under comparable conditions and at reduced image resolutions, as well as the use of Grad-CAM to better understand model predictions.
+
+The mechanical design of the ocular adapter itself is not part of this thesis. The development of the resolution-adaptive simulation database is also executed in a separate project. Clinical validation, species-level diagnosis, parasite density estimation, and the development of a fully field-ready Mobile Diagnostic Kit are outside the scope of the present work.
+
+The requirements defined in this chapter provide the framework for the concept development and implementation described in the following chapters.
+
+

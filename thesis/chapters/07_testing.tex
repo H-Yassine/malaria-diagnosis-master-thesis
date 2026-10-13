@@ -1,3 +1,347 @@
 \chapter{Testing and Evaluation}
 \label{chap:testing}
 
+This chapter presents the results of the developed models and evaluates how they perform at the different resolution levels. In addition to the normal test results, Grad-CAM, Grad-CAM++, and an external test dataset were also used to better understand the models behaviour.
+
+\section{Experimental Setup}
+
+To keep the evaluation reliable, the same patient-based dataset split described in Section~\ref{sec:dataset-description} was used for all experiments. The NLM dataset was divided into training, validation, and test sets using a 70/15/15 ratio with a fixed random seed of 42. This resulted in 4186 training images, 899 validation images, and 953 test images. The split was based on patients, so images from the same patient appear in only one split. 
+
+The test set contains 750 infected images and 203 uninfected images. The number of infected samples is therefore considerably higher than the number of uninfected samples. This class imbalance is important when interpreting the results, especially sensitivity and specificity, since a high overall accuracy alone does not show how well both classes are recognised.
+
+A total of eight main experiments were performed. ResNet50 was evaluated at all four resolution conditions (HR, LR1, LR2, and LR3), while ResNet18 and MobileNetV3-Small were evaluated only at HR and LR3. After the ResNet50 experiments showed that LR1 remained very close to the HR condition, the intermediate resolution levels were not repeated for the other architectures. Instead, HR and LR3 were selected to represent the two ends of the investigated resolution range. The exact image resolutions and preprocessing steps for HR, LR1, LR2, and LR3 are shown and explained in Section~\ref{sec:data-preprocessing}.
+
+The training settings used for the eight main experiments are summarised in Table~\ref{tab:experimental_setup}. The same configuration was used for all eight baseline experiments, with 15 epochs, a batch size of 8, a learning rate of \(0.0001\), and CrossEntropyLoss. MobileNetV3-Small at LR3 was additionally optimised, as described in Section~\ref{sec:pipeline-architecture}. The final configuration used 30 epochs, a batch size of 16, a learning rate of \(0.00003\), and a weighted CrossEntropyLoss with class weights of \([2.0,1.0]\).
+
+\begin{table}[htbp]
+    \centering
+    \caption{Training configuration of the eight main experiments.}
+    \label{tab:experimental_setup}
+
+    \small
+    \setlength{\tabcolsep}{4pt}
+
+    \begin{tabular}{|l|c|c|c|c|l|}
+        \hline
+        \textbf{Architecture} & \textbf{Resolution} & \textbf{Epochs} &
+        \textbf{Batch} & \textbf{LR} & \textbf{Loss} \\ \hline
+
+        ResNet50 & HR  & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+        ResNet50 & LR1 & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+        ResNet50 & LR2 & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+        ResNet50 & LR3 & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+
+        ResNet18 & HR  & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+        ResNet18 & LR3 & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+
+        MobileNetV3-Small & HR  & 15 & 8 & 0.0001 & CrossEntropyLoss \\ \hline
+        MobileNetV3-Small & LR3 & 15 & 8 & 0.0001 &
+        CrossEntropyLoss \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+For the final evaluation, the saved \textbf{best\_model.pth} checkpoint from each experiment was loaded and evaluated on the test split. The checkpoint was selected during training based on the validation accuracy, as described in Chapter~\ref{chap:concept-development}. During testing, the model was set to evaluation mode and its parameters were not changed.
+
+The reported evaluation metrics are accuracy, sensitivity, specificity, precision, F1-score, and ROC-AUC. The definitions and meaning of these metrics were already introduced in Section~\ref{sec:deep_learning_fundamentals}. Because the model is intended for screening, sensitivity is especially important. A false negative means that an infected image is classified as uninfected, which should be avoided in a screening system. Specificity is considered together with sensitivity to show whether good detection of infected images is achieved without incorrectly classifying too many uninfected images as infected.
+
+\section{Full-Resolution Results}
+
+First, the models were compared using full-resolution (HR) images. All three architectures were evaluated on the same test set of 953 images. These results will be used as a reference before analysing the effect of reduced image resolution in the following sections.
+
+The results are shown in Table~\ref{tab:hr_results}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Test results of the three architectures at full resolution.}
+    \label{tab:hr_results}
+
+    \small
+    \setlength{\tabcolsep}{4pt}
+
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Architecture} & \textbf{Accuracy} & \textbf{Sensitivity} &
+        \textbf{Specificity} & \textbf{Precision} & \textbf{F1} &
+        \textbf{ROC-AUC} \\ \hline
+        ResNet50 & 0.9958 & 0.9973 & 0.9901 & 0.9973 & 0.9973 & 0.9997 \\ \hline
+        ResNet18 & 0.9969 & 1.0000 & 0.9852 & 0.9960 & 0.9980 & 1.0000 \\ \hline
+        MobileNetV3-S & 0.9969 & 1.0000 & 0.9852 & 0.9960 & 0.9980 & 0.9999 \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+All three models achieved very high results at full resolution, and the differences between them were small. ResNet50 reached an accuracy of 0.9958 and misclassified four of the 953 test images. Two infected images were classified as uninfected and two uninfected images were classified as infected.
+
+ResNet18 and MobileNetV3-Small both reached an accuracy of 0.9969. Both models correctly classified all 750 infected images and therefore achieved a sensitivity of 1.0000. Each model incorrectly classified three of the 203 uninfected images as infected, resulting in a specificity of 0.9852.
+
+The absence of false negatives in ResNet18 and MobileNetV3-Small is important for screening, as zero infected images were missed. In general, the differences between the three architectures are very small and are based on a few images. The HR results show that all three architectures perform similarly well under the normal resolution condition.
+
+\section{Performance under Reduced Resolution}
+
+\subsection{ResNet50 across the Resolution Levels}
+
+ResNet50 was the only architecture tested at all four resolution conditions. This makes it possible to observe how the model performance changes when the image resolution is reduced from HR to LR3. The results are shown in Table~\ref{tab:resnet50_resolution_results}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{ResNet50 test results at the four resolution conditions.}
+    \label{tab:resnet50_resolution_results}
+
+    \small
+    \setlength{\tabcolsep}{4pt}
+
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Resolution} & \textbf{Accuracy} & \textbf{Sensitivity} &
+        \textbf{Specificity} & \textbf{Precision} & \textbf{F1} &
+        \textbf{ROC-AUC} \\ \hline
+        HR  & 0.9958 & 0.9973 & 0.9901 & 0.9973 & 0.9973 & 0.9997 \\ \hline
+        LR1 & 0.9958 & 0.9987 & 0.9852 & 0.9960 & 0.9973 & 0.9999 \\ \hline
+        LR2 & 0.9843 & 0.9960 & 0.9409 & 0.9842 & 0.9901 & 0.9994 \\ \hline
+        LR3 & 0.9286 & 0.9800 & 0.7389 & 0.9327 & 0.9558 & 0.9698 \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+Figure~\ref{fig:resnet50_confusion_matrices} shows the confusion matrices for ResNet50 across the four resolution conditions.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{
+        \includegraphics[width=0.80\textwidth]{figures/resnet50_confusion_matrices.pdf}
+    }
+    \caption{Confusion matrices of ResNet50 for HR, LR1, LR2, and LR3.}
+    \label{fig:resnet50_confusion_matrices}
+\end{figure}
+
+\FloatBarrier
+
+As can be seen from the results table and the confusion matrices, the overall performance stayed good under the first reduced resolution, from HR to LR1. Both resolutions reached an accuracy of 0.9958. The number of misclassified images was also the same. HR gave two false positives and two false negatives, while LR1 gave three false positives and one false negative.
+
+At LR2, the accuracy decreased to 0.9843, while sensitivity remained high at 0.9960. The clearer change was seen in specificity, which decreased from 0.9901 at HR to 0.9409 at LR2. In LR2, 12 uninfected images were classified as infected and three infected images were classified as uninfected.
+
+LR3 showed the strongest reduction in performance. Accuracy decreased to 0.9286 and specificity dropped to 0.7389. The model incorrectly classified 53 uninfected images as infected and missed 15 infected images. Sensitivity still remained relatively high at 0.9800, but the number of false positives increased clearly compared with previous resolutions.
+
+In general, ResNet50 remained very stable between HR and LR1. The performance started to decrease more clearly at LR2 and especially at LR3. The largest change across the resolution levels was seen in specificity, while sensitivity stayed high across all four conditions.
+
+\subsection{Architecture Comparison at LR3}
+
+To analyse how strong resolution reduction impacts model performance, all three architectures were compared at LR3. For MobileNetV3-Small, the baseline result before optimisation was used in this comparison. The results are shown in Table~\ref{tab:lr3_architecture_results}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of the three architectures at LR3.}
+    \label{tab:lr3_architecture_results}
+
+    \small
+    \setlength{\tabcolsep}{4pt}
+
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Architecture} & \textbf{Accuracy} & \textbf{Sensitivity} &
+        \textbf{Specificity} & \textbf{Precision} & \textbf{F1} &
+        \textbf{ROC-AUC} \\ \hline
+        ResNet50 & 0.9286 & 0.9800 & 0.7389 & 0.9327 & 0.9558 & 0.9698 \\ \hline
+        ResNet18 & 0.9108 & 0.9453 & 0.7833 & 0.9416 & 0.9434 & 0.9666 \\ \hline
+        MobileNetV3-S & 0.8930 & 0.9480 & 0.6897 & 0.9186 & 0.9331 & 0.9378 \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+At LR3, the differences between the three architectures are clearer. ResNet50 achieved the highest accuracy of 0.9286 and the highest sensitivity of 0.9800. It missed 15 infected images and incorrectly classified 53 uninfected images as infected.
+
+ResNet18 reached an accuracy of 0.9108. The sensitivity was lower at 0.9453, with 41 infected images classified as uninfected. On the other hand, it achieved the highest specificity of the three models at 0.7833 and gave 44 false positives.
+
+The baseline MobileNetV3-Small reached an accuracy of 0.8930 and a sensitivity of 0.9480. It produced 39 false negatives and 63 false positives. Its specificity of 0.6897 was the lowest of all the three architectures.
+
+In summary, all three architectures showed a reduction in performance at LR3 compared with the full-resolution results. ResNet50 kept the highest accuracy and sensitivity, while ResNet18 achieved the highest specificity. MobileNetV3-Small showed the lowest baseline performance at LR3. 
+
+Since MobileNetV3-Small was the architecture considered for lightweight deployment, a two-stage optimisation was investigated in the following section.
+
+\section{MobileNet Optimisation at LR3}
+
+Considering that MobileNetV3-Small was selected as a lightweight architecture for future deployment, its performance at LR3 was investigated further. The baseline model showed lower performance than the two ResNet architectures, especially in specificity. Therefore, two optimisation stages were performed.
+
+In the first optimisation stage, the learning rate was reduced from 0.0001 to 0.00003, the batch size was increased from 8 to 16, and the number of training epochs was increased from 15 to 30. In the second stage, the same settings were kept and class weights of \([2.0,1.0]\) were added to the CrossEntropyLoss.
+
+The results of the three stages are shown in Table~\ref{tab:mobilenet_lr3_optimisation}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{MobileNetV3-Small results at LR3 before and after optimisation.}
+    \label{tab:mobilenet_lr3_optimisation}
+
+    \small
+    \setlength{\tabcolsep}{4pt}
+
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Stage} & \textbf{Accuracy} & \textbf{Sensitivity} &
+        \textbf{Specificity} & \textbf{Precision} & \textbf{F1} &
+        \textbf{ROC-AUC} \\ \hline
+        Baseline & 0.8930 & 0.9480 & 0.6897 & 0.9186 & 0.9331 & 0.9378 \\ \hline
+        Optimisation 1 & 0.9234 & 0.9920 & 0.6700 & 0.9174 & 0.9532 & 0.9711 \\ \hline
+        Optimisation 2 & 0.9276 & 0.9640 & 0.7931 & 0.9451 & 0.9545 & 0.9506 \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+The first optimisation stage increased the accuracy from 0.8930 to 0.9234. The sensitivity also increased from 0.9480 to 0.9920, reducing the number of false negatives from 39 to only 6. The specificity decreased slightly from 0.6897 to 0.6700, and the number of false positives increased from 63 to 67.
+
+Because of the class imbalance in the dataset, class weights were added in the second optimisation stage. This improved the accuracy to 0.9276. The biggest improvement was seen in specificity, which increased to 0.7931 as false positives dropped to 42. Meanwhile, sensitivity reached 0.9640.
+
+The second optimisation stage gave a more balanced result between sensitivity and specificity. It also achieved the highest accuracy, precision, and F1-score of the three MobileNetV3-Small LR3 experiments. Although the sensitivity was lower than in the first optimisation stage, it was still higher than the baseline result.
+
+\section{Explainability: Grad-CAM and Grad-CAM++}
+
+To have a better understanding of the models' performance and which image regions influenced the model predictions, Grad-CAM and Grad-CAM++ were used for some selected test images. The analysis included examples from all four groups which are the true-positive, true-negative, false-positive, and false-negative.
+
+\subsection{ResNet50 at HR and LR3}
+
+The first visual comparison was to compare the behaviour of ResNet50 at full-resolution and LR3. Figure~\ref{fig:resnet50_hr_gradcam} shows the Grad-CAM results at full resolution.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{
+        \includegraphics[width=0.85\textwidth]{figures/resnet50_hr_gradcam.pdf}
+    }
+    \caption{Grad-CAM results for ResNet50 at full resolution.}
+    \label{fig:resnet50_hr_gradcam}
+\end{figure}
+
+\FloatBarrier
+
+As observed in the Grad-CAM visualisations, the activation was not always inside the microscope field. In several examples, stronger activation was visible around the circular image boundary and in the surrounding dark background. False-positive cases showed especially stronger activation inside the blood-smear region.
+
+To investigate these results further, the same analysis was then performed for ResNet50 at LR3 using both Grad-CAM and Grad-CAM++, to check whether similar activation patterns could be observed with both methods. Figure~\ref{fig:resnet50_lr3_gradcam} compares Grad-CAM and Grad-CAM++ for the same LR3 predictions.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{
+        \includegraphics[width=0.55\textwidth]{figures/resnet50_lr3_gradcam.pdf}
+    }
+    \caption{Comparison of Grad-CAM and Grad-CAM++ for ResNet50 LR3 predictions.}
+    \label{fig:resnet50_lr3_gradcam}
+\end{figure}
+
+\FloatBarrier
+
+Looking at LR3 visualisations, activation around the circular boundary and the surrounding background was again visible in several examples. This was more noticeable in true-positive and true-negative cases. On the contrary, some false-positive and false-negative examples showed stronger activation inside the microscope field. 
+
+Grad-CAM++ showed a similar behaviour pattern. In some images, the activated regions were stronger, but activation around the circular boundary was still there. These results suggest that ResNet50 may have used image characteristics outside the blood-smear region.
+
+\subsection{Architecture Comparison at LR3}
+
+To determine whether the results observed in ResNet50 occur across all models, the same analysis was also performed for ResNet18 and MobileNetV3-Small at LR3 to check whether similar activation patterns could be observed in the other architectures.
+
+As shown in Figure~\ref{fig:resnet18_lr3_gradcam}, both Grad-CAM and Grad-CAM++ showed broad activation regions in several examples for ResNet18. What is more clear is the strong activation around the circular microscope boundary and the dark surrounding area, especially in true-positive and true-negative cases. Some of the false-positive and false-negative examples showed stronger activation inside the microscope field. Similar to ResNet50, Grad-CAM++ sometimes produced more focused regions, but the general pattern stays the same.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{
+        \includegraphics[width=0.55\textwidth]{figures/resnet18_lr3_gradcam.pdf}
+    }
+    \caption{Comparison of Grad-CAM and Grad-CAM++ for ResNet18 LR3 predictions.}
+    \label{fig:resnet18_lr3_gradcam}
+\end{figure}
+
+\FloatBarrier
+
+The activation pattern seen in ResNet50 and ResNet18 was also seen in the optimised MobileNetV3-Small. The Grad-CAM results in Figure~\ref{fig:mobilenet_lr3_gradcam} showed activation around the circular image boundary. The false-negative examples were mostly focused on the edges, while the false-positive examples showed stronger activation inside the microscope field. The true-negative examples were also focused outside the circular field or around its boundary. The true-positive examples showed a combination of activation inside the microscope field and also around the edges.
+
+As expected, the Grad-CAM++ results showed similar results. The false-positive examples remained mainly focused inside the microscope field, and most true-positive examples also showed stronger activation inside the circular region. However, several false-negative and true-negative examples still contained strong activation around or outside the circular boundary.
+
+\begin{figure}[H]
+    \centering
+    \fbox{
+        \includegraphics[width=0.55\textwidth]{figures/mobilenet_lr3_gradcam.png}
+    }
+    \caption{Comparison of Grad-CAM and Grad-CAM++ for MobileNetV3-Small LR3 predictions.}
+    \label{fig:mobilenet_lr3_gradcam}
+\end{figure}
+
+\FloatBarrier
+
+Based on these Grad-CAM and Grad-CAM++ results, all three architectures showed activation in some cases around the circular microscope boundary or the surrounding background. This finding does not prove that the models learned a shortcut by relying on edges, but it raises the question whether the image characteristics of the NLM dataset may have influenced some predictions. For this reason, an additional external test dataset with different image characteristics from the NLM dataset was used in the following section.
+
+\section{External Validation}
+
+To investigate whether the models may have relied on edge characteristics in the NLM dataset, an external test was performed on a new dataset that the models had never seen before. This dataset is from AIR Uganda. It contains 1182 malaria-positive images and has different image characteristics compared with the NLM dataset. No uninfected images are involved in the test.
+
+The Uganda images were only used for external testing with already trained checkpoints. No additional training or optimisation was performed on the Uganda images.
+
+Figure~\ref{fig:nlm_uganda_comparison} shows one example image from the NLM dataset and one example from the AIR Uganda dataset to illustrate the difference in image appearance between the two datasets.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{
+        \includegraphics[width=0.85\textwidth]{figures/nlm_uganda_comparison.png}
+    }
+    \caption{Example infected images from the NLM dataset and the AIR Uganda external dataset: (a) NLM (image TF1N\_1522) and (b) AIR Uganda (plasmodium-phone-0001.jpg).}
+    \label{fig:nlm_uganda_comparison}
+\end{figure}
+
+\FloatBarrier
+
+As mentioned before, the external dataset contains only infected images. For this reason, sensitivity was used as the main evaluation metric. Specificity could not be calculated because no uninfected samples were available. The results are shown in Table~\ref{tab:uganda_results}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{External test results on the AIR Uganda dataset.}
+    \label{tab:uganda_results}
+
+    \small
+    \setlength{\tabcolsep}{5pt}
+
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Correctly predicted} &
+        \textbf{False Negatives} & \textbf{Sensitivity} \\ \hline
+        ResNet50 HR & 1182 / 1182 & 0 & 1.0000 \\ \hline
+        ResNet50 LR3 & 1164 / 1182 & 18 & 0.9848 \\ \hline
+        ResNet18 LR3 & 973 / 1182 & 209 & 0.8232 \\ \hline
+        MobileNetV3-Small LR3 Opt. 2 & 1130 / 1182 & 52 & 0.9560 \\ \hline
+    \end{tabular}
+\end{table}
+
+\FloatBarrier
+
+ResNet50 at full resolution detected all 1182 infected images correctly and reached a sensitivity of 1.0000. ResNet50 at LR3 also performed very well on the external dataset. It reached a sensitivity of 0.9848 and missed only 18 infected images.
+
+The optimised MobileNetV3-Small at LR3 reached a sensitivity of 0.9560. It predicted correctly 1130 infected images and missed 52 cases. It is also worth mentioning that, despite the class weighting towards the uninfected class, the model still maintained a high sensitivity.
+
+ResNet18 at LR3 showed the lowest external performance, with a sensitivity of 0.8232 and 209 false negatives. 
+
+These results show that the models were still able to detect infected images from an unseen dataset, but the performance was not equally stable across all architectures. ResNet50 showed the strongest external result at both HR and LR3, while ResNet18 showed the lowest external sensitivity.
+
+The findings in the external test indicate that the activation around image boundaries observed in the Grad-CAM analysis does not automatically mean that the models fail on images with different characteristics. Since this experiment tests the models only on positive samples, nothing can be said about specificity or how well the models predict uninfected images.
+
+\section{Discussion and Limitations}
+
+After evaluating all results, it is clear that all three architectures performed very similarly at full resolution (HR). The achieved accuracies from the models were around 0.996 and the differences between them were based on only a few wrong predictions. The effect of reducing the resolution became more visible at LR2 and significantly at LR3. For ResNet50, sensitivity remained high across all resolution levels, while specificity decreased sharply when the resolution decreased. To be more precise, specificity changed from 0.9901 at HR to 0.9852 at LR1. At LR2 it decreased even more to 0.9409. At LR3, it reached its lowest 0.7389. These observed metrics show that the reduced resolution caused a number of uninfected images to be misclassified as infected.
+
+At LR3, the differences between the architectures became more clear. ResNet50 reached an accuracy of 0.9286, while the baseline MobileNetV3-Small reached 0.8930. After the two optimisation stages, MobileNetV3-Small did improve in terms of accuracy, which reached 0.9276.  This optimisation made the MobileNetV3-Small performance very close to ResNet50, which further supports the argument for selecting MobileNetV3-Small as the lightweight architecture to be considered for future deployment.
+
+This MobileNet optimisation also showed a clear trade-off between sensitivity and specificity. The first optimisation improved the sensitivity by reaching 0.9920, but specificity was only 0.6700. The second optimisation stage compromised slightly on sensitivity (0.9640) to increase specificity to 0.7931. This represents a more balanced result between the two classes. 
+
+For a screening application, which is the end goal of this overall project, a high sensitivity is very important to prevent a high number of false-negative case. If the deployment relies also on a second test that validates the model prediction, then the first optimisation stage could therefore also be considered despite its lower specificity. Stage 2 was selected by comparing the test-set metrics, so its reported performance may be slightly optimistic. The Uganda dataset was not used for this selection.
+
+The Grad-CAM and Grad-CAM++ visualisations indicated that the models may not always focus only on regions inside the microscope field, but also on the edges. In several Grad-CAM outputs, activation was visible in the surrounding background. This raised the question whether dataset-specific image characteristics may have played a role in some predictions. This issue was investigated with a test using an external dataset from AIR Uganda, which showed that almost all models still score very well on images with different characteristics than NLM images. In the external test, ResNet50 reached a sensitivity of 1.0000 at HR and 0.9848 at LR3. The optimised MobileNetV3-Small also reached a high sensitivity of 0.9560. On the other hand, ResNet18 at LR3 performed badly and reached a sensitivity of only 0.8232. This shows that robustness was not the same for all architectures.  
+
+The strong external results suggest that the models did not rely only on the NLM image borders for their predictions.
+
+The LR3 experiments are very relevant for the ocular adapter part of the overall project. These results show that effective classification was still possible even after a strong resolution reduction. This is considered positive for a future system where image quality may be low due to limited resources. Yet, LR3 was created by downsampling and does not represent real images captured directly through the actual ocular adapter, which means a real field performance cannot be determined here.
+
+The external Uganda dataset also has some limitations. It contains only malaria-positive images. That said, specificity and false-positive behaviour could not be evaluated. 
+
+It's also worth mentioning that not all trained models were evaluated on the external Uganda dataset. ResNet18-HR, MobileNetV3-Small-HR, ResNet50-LR1, and ResNet50-LR2 were not included in the external test. In addition, the system developed in this thesis has not yet been evaluated on real field images from Ethiopia or under clinical conditions. These points should be investigated in future work.
+
+
+
+

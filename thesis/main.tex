@@ -1,46 +1,33 @@
 \documentclass[
-    12pt,
+    11pt,
     a4paper,
-    oneside
+    twoside
 ]{report}
 
-% -------------------------------------------------
-% Language and encoding
-% -------------------------------------------------
-
+\raggedbottom
+\usepackage{tabularx}
+\usepackage{placeins}
+\usepackage{parskip}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
+\usepackage{caption}
+\usepackage{url}
+\usepackage[most]{tcolorbox}
 
-% -------------------------------------------------
-% Page layout and typography
-% -------------------------------------------------
+\usepackage{float}
 
-\usepackage[
-    left=3cm,
-    right=2.5cm,
-    top=2.5cm,
-    bottom=2.5cm
-]{geometry}
+\usepackage[twoside,left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm]{geometry}
 
 \usepackage{lmodern}
 \usepackage{microtype}
-\usepackage{setspace}
-\onehalfspacing
-
-% -------------------------------------------------
-% Chapter formatting
-% -------------------------------------------------
+%\usepackage{setspace}
+%\onehalfspacing
 
 \usepackage{titlesec}
 
-% Roman numerals for the main chapters
-\renewcommand{\thechapter}{\Roman{chapter}}
-
-% Display: I Introduction
-% Do not display: Chapter I
 \titleformat{\chapter}
-    {\normalfont\LARGE\bfseries}
+    {\normalfont\LARGE\bfseries\sffamily}
     {\thechapter}
     {1em}
     {}
@@ -50,19 +37,13 @@
     {-20pt}
     {30pt}
 
-% -------------------------------------------------
-% Mathematics
-% -------------------------------------------------
+\titleformat{\section}{\Large\bfseries\sffamily}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\sffamily}{\thesubsubsection}{1em}{}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-
-% Chapter-relative numbering, for example (IV.1)
 \numberwithin{equation}{chapter}
-
-% -------------------------------------------------
-% Figures and tables
-% -------------------------------------------------
 
 \usepackage{graphicx}
 \graphicspath{{figures/}}
@@ -71,13 +52,8 @@
 \usepackage{tabularx}
 \usepackage{longtable}
 
-% Chapter-relative numbering, for example Figure V.2
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
-
-% -------------------------------------------------
-% Units and source-code excerpts
-% -------------------------------------------------
 
 \usepackage{siunitx}
 
@@ -92,35 +68,50 @@
     showstringspaces=false
 }
 
-% -------------------------------------------------
-% Colours
-% Required later for documenting AI-assisted content
-% -------------------------------------------------
-
 \usepackage{xcolor}
+\usepackage{mdframed}
 
-% -------------------------------------------------
-% Bibliography
-% -------------------------------------------------
+\definecolor{aiblue}{RGB}{0,0,200}
 
+\newenvironment{aicontent}{\color{aiblue}}{}
 
+\newmdenv[
+    backgroundcolor=gray!15,
+    linewidth=0pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt,
+    innerleftmargin=10pt,
+    innerrightmargin=10pt
+]{aiassessment}
 
-% -------------------------------------------------
-% Links and cross-references
-% -------------------------------------------------
+\definecolor{ColHyper}{RGB}{20,40,120}
 
-\usepackage[hidelinks]{hyperref}
+\usepackage[
+    colorlinks,
+    linkcolor=ColHyper,
+    citecolor=ColHyper,
+    urlcolor=ColHyper,
+    filecolor=ColHyper
+]{hyperref}
 \usepackage[nameinlink]{cleveref}
 
-% -------------------------------------------------
-% Document
-% -------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\footnotesize\sffamily\leftmark}
+\fancyhead[RO]{\footnotesize\sffamily\rightmark}
+\fancyfoot[C]{\footnotesize\sffamily\thepage}
+\fancyfoot[LE,RO]{\includegraphics[height=5mm]{HAWK_I_Logo.jpg}}
+\renewcommand{\headrulewidth}{0.1pt}
+\renewcommand{\footrulewidth}{0.1pt}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[C]{\footnotesize\sffamily\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
 
 \begin{document}
-
-% -------------------------------------------------
-% Title page
-% -------------------------------------------------
 
 \begin{titlepage}
 
@@ -131,8 +122,7 @@
         \vspace{2.2cm}
 
         {\LARGE\bfseries
-        AI-Based Malaria Diagnosis from Microscopic Thick Blood Smear Images
-        \par}
+        AI-Based Malaria Diagnostic Method Using Resolution-Limited Microscopic Thick Blood Smear Images        \par}
 
     \end{center}
 
@@ -170,7 +160,7 @@
         CarByte Engineering GmbH \\
 
         Period: &
-        July 2026 to November 2026 \\
+        July 2026 to October 2026 \\
 
     \end{tabular}
 
@@ -178,25 +168,24 @@
 
 \end{titlepage}
 
-% -------------------------------------------------
-% Front matter
-% -------------------------------------------------
-
 \pagenumbering{roman}
 
 \input{chapters/00_abstract}
 
 \clearpage
 \tableofcontents
+
 \clearpage
+\listoffigures
 
-% The glossary will be inserted here later.
-% According to the HAWK guidance, it should preferably
-% appear directly after the table of contents.
+\clearpage
+\listoftables
 
-% -------------------------------------------------
-% Main content
-% -------------------------------------------------
+\clearpage
+\lstlistoflistings
+
+\clearpage
+\pagenumbering{arabic}
 
 \pagenumbering{arabic}
 
@@ -218,13 +207,11 @@
 
 \input{chapters/09_conclusion}
 
-% -------------------------------------------------
-% Bibliography
-% -------------------------------------------------
-
 \clearpage
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{english}
 \bibliography{references}
+
+
 
 \end{document}

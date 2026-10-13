@@ -1,3 +1,42 @@
 \chapter{System Overview}
 \label{chap:system-overview}
 
+As described in \nameref{chap:introduction}, this thesis is part of a larger system for AI-based malaria diagnosis from microscopic blood smear images. This chapter presents the overall system architecture and explains how its main components work together.
+
+\section{System Architecture}
+
+The overall system combines image acquisition, image processing, and AI-based diagnosis. Figure~\ref{fig:system_architecture} gives an overview of the complete diagnostic process and shows how the different parts of the project are connected.
+
+\begin{figure}[htbp]
+    \centering
+    \setlength{\fboxsep}{0pt}
+    \setlength{\fboxrule}{0.5pt}
+    \fbox{\includegraphics[width=0.95\textwidth]{figures/system_architecture.pdf}}
+    \caption{Overall architecture of the malaria diagnosis system.}
+    \label{fig:system_architecture}
+\end{figure}
+
+The diagnostic process starts with a blood sample from the patient. The sample is prepared as a Giemsa-stained thick blood smear and examined with an analog microscope. The ocular adapter, developed by Nabil Laaroussi as part of his Master's project, connects a smartphone to the microscope. The smartphone camera is then used to capture a digital image of the blood smear.
+
+The captured image is transferred to a PC-based diagnostic tool. The AI diagnosis module processes the image and classifies it as infected or uninfected. This part is the main focus of this thesis. The classification result is then shown to the user through a graphical user interface (GUI).
+
+The overall system also includes the image simulation database developed by Zaineb Lerhmame as part of her Master's project. It provides images at different resolutions that can be used with the AI diagnosis module. Since this database supports the development and evaluation of the diagnostic method, it is shown separately from the main diagnostic process in the system architecture.
+
+\subsection{Ocular Adapter}
+
+The ocular adapter is used to connect a smartphone to the eyepiece of an analog microscope. Its main purpose is to allow the smartphone camera to capture the microscopic image of the Giemsa-stained thick blood smear. In this way, the microscope image can be digitized and made available for further processing by the PC-based diagnostic tool. The adapter therefore forms the connection between the microscopic examination and the digital image processing part of the system. The detailed design and development of the ocular adapter are part of a separate Master's project by Nabil Laaroussi and are therefore not covered in this work.
+
+\subsection{Image Simulation Database}
+
+The image simulation database provides images at different resolutions for the development and evaluation of the AI diagnosis module. Its purpose is to simulate changes in image resolution and make it possible to investigate how these changes affect the diagnostic performance. This is important for the overall system because the image quality provided by the smartphone and ocular adapter may differ from the original microscopic images. The simulation database is used as a supporting component and is not part of the direct diagnostic process from the patient to the final result. The development of the image simulation database is part of a separate Master's project by Zaineb Lerhmame and is therefore not covered in this work.
+\subsection{AI Diagnosis Module}
+
+The AI diagnosis module is the main focus of this thesis. It receives the digital microscopic images and processes them before they are passed to a deep learning model. The model then performs a binary classification and determines whether an image is infected or uninfected. The classification result is provided to the graphical user interface, where it can be displayed to the user. Since the image resolution can vary within the overall system, the performance of the AI diagnosis module at different image resolutions is also investigated in this work.
+
+\subsection{Deployment Context}
+
+The system is intended for use in a health center under controlled indoor conditions. The microscope images are captured using the smartphone and ocular adapter, while the diagnosis is performed using the PC-based diagnostic tool. The AI algorithms are implemented in Python so that they can later be used and further developed by the Ethiopian Artificial Intelligence Institute (EAII).
+
+At this stage, the project focuses on the development of a prototype. A later system for field use may require additional improvements, especially regarding robustness under different operating conditions. These requirements are discussed in more detail in \cref{chap:requirements-analysis}.
+
+This chapter presented the overall structure of the malaria diagnosis system and described the role of its main components. The next chapter reviews existing research and approaches related to AI-based malaria diagnosis and provides the background for the development of the diagnostic method used in this thesis.
