@@ -1,0 +1,36 @@
+
+--- external test (Uganda), checkpoint: /Users/yassine.hermak/Desktop/Masterarbeit/malaria-diagnosis/scripts/Resnet18-LR3/checkpoints/best_model.pth ---
+confusion matrix:
+[[  0   0]
+ [209 973]]
+accuracy: 0.8232
+sensitivity: 0.8232
+support - infected: 1182
+specificity/precision/f1/roc-auc: not applicable (infected-only external set)
+              precision    recall  f1-score   support
+
+  uninfected       0.00      0.00      0.00         0
+    infected       1.00      0.82      0.90      1182
+
+    accuracy                           0.82      1182
+   macro avg       0.50      0.41      0.45      1182
+weighted avg       1.00      0.82      0.90      1182
+
+
+--- external test (Uganda), checkpoint: /Users/yassine.hermak/Desktop/Masterarbeit/malaria-diagnosis/scripts/Resnet18-LR3/checkpoints/best_model.pth ---
+confusion matrix:
+[[  0   0]
+ [209 973]]
+accuracy: 0.8232
+sensitivity: 0.8232
+support - infected: 1182
+specificity/precision/f1/roc-auc: not applicable (infected-only external set)
+              precision    recall  f1-score   support
+
+  uninfected       0.00      0.00      0.00         0
+    infected       1.00      0.82      0.90      1182
+
+    accuracy                           0.82      1182
+   macro avg       0.50      0.41      0.45      1182
+weighted avg       1.00      0.82      0.90      1182
+

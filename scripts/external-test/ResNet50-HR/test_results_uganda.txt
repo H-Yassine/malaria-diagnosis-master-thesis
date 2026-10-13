@@ -1,0 +1,18 @@
+
+--- external test (Uganda), checkpoint: ../Resnet50-HR/checkpoints/best_model.pth ---
+confusion matrix:
+[[   0    0]
+ [   0 1182]]
+accuracy: 1.0000
+sensitivity: 1.0000
+support - infected: 1182
+specificity/precision/f1/roc-auc: not applicable (infected-only external set)
+              precision    recall  f1-score   support
+
+  uninfected       0.00      0.00      0.00         0
+    infected       1.00      1.00      1.00      1182
+
+    accuracy                           1.00      1182
+   macro avg       0.50      0.50      0.50      1182
+weighted avg       1.00      1.00      1.00      1182
+
